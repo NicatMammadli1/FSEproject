@@ -1,0 +1,29 @@
+let img; 
+let button;
+let button2;
+let button3;
+let button4;
+
+function preload() {
+  img = loadImage('AppHome2.jpg'); // Load the image
+} 
+
+function setup() {
+  createCanvas(432, 624);
+  button = createButton('');
+  button.position(18, 247);
+  button.size(85,100);
+  // button.hide();
+  button.mousePressed(buttonPressed); 
+}
+
+function draw() {
+  background(220);
+  image(img, 0, 0);
+}
+
+
+// Callback function for button press
+function buttonPressed() {
+  background(random(255), random(255), random(255)); 
+}
