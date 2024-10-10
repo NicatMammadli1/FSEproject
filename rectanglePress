@@ -1,0 +1,6 @@
+function mousePressed() {
+  // Check if the box is clicked
+  if (mouseX > 150 && mouseX < 250 && mouseY > 150 && mouseY < 250) {
+    window.location.href = 'E1.html'; // Navigate to second HTML file
+  }
+}
