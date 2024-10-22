@@ -9,6 +9,51 @@ let timerActive = false;
 let draggingCircle = null;
 let resultsVisible = false;
 
+
+
+let confetti = [];
+let confettiActive = false;
+let confettiTimer = 0; 
+const confettiDuration = 6; 
+const confettiColor = ['orange', 'cyan', 'pink', 'blue', 'yellow', 'lime', 'red'];
+
+class Confetti {
+  constructor(_x, _y, _s) {
+    this.x = _x;
+    this.y = _y;
+    this.speed = _s;
+    this.time = random(0, 100);
+    this.color = random(confettiColor);
+    this.amp = random(2, 30);
+    this.phase = random(0.5, 2);
+    this.size = random(width / 25, height / 50);
+    this.form = round(random(0, 1)); 
+  }
+
+  confettiDisplay() {
+    fill(this.color);
+    noStroke();
+    push();
+    translate(this.x, this.y);
+    translate(this.amp * sin(this.time * this.phase), this.speed * cos(2 * this.time * this.phase));
+    rotate(this.time);
+    rectMode(CENTER);
+    scale(cos(this.time / 4), sin(this.time / 4));
+    if (this.form === 0) {
+      rect(0, 0, this.size, this.size / 2);
+    } else {
+      ellipse(0, 0, this.size);
+    }
+    pop();
+
+    this.time = this.time + 0.1; 
+
+    this.speed += 1 / 200; 
+
+    this.y += this.speed; 
+  }
+}
+
 function setup() {
   createCanvas(400, 620);
   textAlign(CENTER, CENTER);
@@ -22,14 +67,12 @@ function resetCircles() {
   count = 0;
   for (let i = 0; i < 4; i++) {
     let randomX = random(50, 350);
-    let randomY = random(350, 550); 
-    
+    let randomY = random(350, 550);
     redCircles.push({ x: randomX, y: randomY });
   }
   for (let i = 0; i < 4; i++) {
     let randomX = random(50, 350);
     let randomY = random(200, 300);
-    
     whiteCircles.push({ x: randomX, y: randomY });
   }
   timerValue = 15;
@@ -37,6 +80,9 @@ function resetCircles() {
   draggingCircle = null;
   showSubmitButton = true;
   resultsVisible = false;
+  confetti = [];
+  confettiActive = false;
+  confettiTimer = 0; 
 }
 
 function draw() {
@@ -49,7 +95,7 @@ function draw() {
   } else if (state === "submit" && resultsVisible) {
     drawResultPage();
   } else if (state === "home") {
-    background(255); 
+    background(255);
   } else if (state === "error") {
     drawErrorPage();
   }
@@ -62,12 +108,20 @@ function draw() {
     } else {
       text("0:0" + timerValue, 200, 50);
     }
-
-
     if (timerValue === 0) {
       timerActive = false;
       state = "start";
     }
+  }
+
+  if (confettiActive) {
+    drawConfetti();
+    if (confettiTimer >= confettiDuration) {
+      confettiActive = false; 
+      
+    }
+    confettiTimer += 0.018; 
+    
   }
 }
 
@@ -75,19 +129,16 @@ function drawMainPage() {
   textSize(36);
   fill('darkred');
   text("OBJECT PICK UP", 200, 65);
-  textFont('Comic Sans MS')
-
+  textFont('Comic Sans MS');
   fill("orange");
   rect(125, 175, 150, 60);
   fill('black');
   textSize(20);
   text("Begin", 200, 205);
-
   fill("violet");
   ellipse(200, 325, 130, 130);
   fill('black');
   text("Restart", 200, 330);
-
   fill("lime");
   rect(125, 420, 150, 90);
   fill(0);
@@ -96,19 +147,18 @@ function drawMainPage() {
 
   if (showSubmitButton) {
     if (count === 2) {
-      fill('#a3470f'); 
+      fill('#a3470f');
     } else if (count === 3) {
-      fill('#BFC1C2'); 
+      fill('#BFC1C2');
     } else if (count === 4) {
-      fill('#FFBF00'); 
+      fill('#FFBF00');
     } else {
-      fill('black'); 
+      fill('black');
     }
     rect(150, 550, 100, 40);
     fill('white');
     text("Submit", 200, 570);
   }
-
   textSize(24);
   fill('darkred');
   text("Count: " + count, 200, 100);
@@ -116,14 +166,17 @@ function drawMainPage() {
 
 function drawBeginPage() {
   textSize(24);
-  text("Drag the circles to the target", width / 2, 100);
+  text("Drag the circles to the target", 200, 100);
   drawWhiteCircles();
-  drawRedCircles(); 
+  drawRedCircles();
 
   if (count === 4) {
     state = "submit";
     timerActive = false;
     resultsVisible = true;
+    if (!confettiActive) {
+      generateColorBurst(); 
+    }
   }
 }
 
@@ -159,7 +212,6 @@ function drawResultPage() {
   textSize(36);
   fill(0);
   text("Results", 200, 100);
-
   if (count === 1) {
     textSize(25);
     text("You Can Do Better!", 200, 250);
@@ -173,7 +225,6 @@ function drawResultPage() {
     textSize(60);
     text("🥇", 200, 250);
   }
-
   fill("lightblue");
   rect(80, 500, 100, 40);
   fill("black");
@@ -191,7 +242,7 @@ function mousePressed() {
     if (mouseX > 125 && mouseX < 275 && mouseY > 175 && mouseY < 235) {
       state = "begin";
       resetCircles();
-      timerActive = true; 
+      timerActive = true;
     } else if (dist(mouseX, mouseY, 200, 325) < 65) {
       count = 0;
       resetCircles();
@@ -214,11 +265,11 @@ function mousePressed() {
       state = "start";
       resultsVisible = false;
       showSubmitButton = true;
-    } else if (mouseX > 220 && mouseX < 320 && mouseY > 500 && mouseY < 540) {
+    } // Home button on result page
+    else if (mouseX > 220 && mouseX < 320 && mouseY > 500 && mouseY < 540) {
       state = "home";
     }
   }
-
   if (state === "begin") {
     for (let i = 0; i < redCircles.length; i++) {
       if (!circleRemoved[i] && dist(mouseX, mouseY, redCircles[i].x, redCircles[i].y) < 35) {
@@ -234,7 +285,6 @@ function mouseDragged() {
     let i = draggingCircle;
     redCircles[i].x = mouseX;
     redCircles[i].y = mouseY;
-
     if (dist(redCircles[i].x, redCircles[i].y, whiteCircles[i].x, whiteCircles[i].y) < 35 && !circleRemoved[i]) {
       circleRemoved[i] = true;
       count++;
@@ -253,4 +303,18 @@ function timeIt() {
   } else if (timerValue === 0) {
     timerActive = false;
   }
+}
+
+function drawConfetti() {
+  for (let i = 0; i < confetti.length; i++) {
+    confetti[i].confettiDisplay();
+  }
+}
+
+function generateColorBurst() {
+  for (let i = 0; i < 100; i++) {
+    confetti.push(new Confetti(random(0, width), random(-200, -100), random(2, 5)));
+  }
+  confettiActive = true;
+  confettiTimer = 0; 
 }
