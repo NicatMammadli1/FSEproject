@@ -32,7 +32,7 @@ function resetCircles() {
     
     whiteCircles.push({ x: randomX, y: randomY });
   }
-  timerValue = 8;
+  timerValue = 15;
   timerActive = false;
   draggingCircle = null;
   showSubmitButton = true;
