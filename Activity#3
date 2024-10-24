@@ -265,7 +265,7 @@ function mousePressed() {
       state = "start";
       resultsVisible = false;
       showSubmitButton = true;
-    } // Home button on result page
+    } 
     else if (mouseX > 220 && mouseX < 320 && mouseY > 500 && mouseY < 540) {
       state = "home";
     }
