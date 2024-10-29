@@ -211,7 +211,7 @@ function drawErrorPage() {
 function drawResultPage() {
   textSize(36);
   fill(0);
-  text("Results", 200, 100);
+  text("Results:", 200, 100);
   if (count === 1) {
     textSize(25);
     text("You Can Do Better!", 200, 250);
