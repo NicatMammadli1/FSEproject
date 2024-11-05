@@ -11,7 +11,7 @@ let currentTime = 0;
 let confettiArray = []; 
 let confettiColor = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']; 
 let count = 0;
-
+let homeButtonPressedFlag = false;
 
 
 
@@ -23,7 +23,7 @@ function setup() {
   createCanvas(435, 620);
  
   
-  startArea = { x: 175, y: 120, w: 75, h: 20 }; 
+  startArea = { x: 175, y: 120, w: 75, h: 10 }; 
   endArea = { x: 235, y: 570, w: 40, h: 10 };  
 
   
@@ -251,16 +251,36 @@ function drawResultPage() {
   }
 }
 function drawReturnButton() {
+  
   fill(200, 0, 0);
-  rect(width / 2 - 50, height - 80, 100, 40, 5);
+  rect(width / 2.25 - 100, height - 80, 100, 40, 5);
   fill(255);
   textSize(16);
-  text("Return", width / 2, height - 60);
+  text("Back", width / 2.25 - 50, height - 60);
+
+ 
+  if (homeButtonPressedFlag) {
+    fill(0, 200, 0); 
+    rect(width / 1.75 + 10, height - 80, 100, 40); 
+  } else {
+    fill(0, 0, 200); 
+    rect(width / 1.75 + 10, height - 80, 100, 40, 5); 
+  }
+  fill(255);
+  text("Home", width / 1.75 + 60, height - 60);
 }
 
 function mousePressed() {
-  if (gameWon && mouseX > width / 2 - 50 && mouseX < width / 2 + 50 && mouseY > height - 80 && mouseY < height - 40) {
-    restartGame();
+  if (gameWon) {
+    
+    if (mouseX > width / 2.25 - 100 && mouseX < width / 2.25 && mouseY > height - 80 && mouseY < height - 40) {
+      restartGame();
+    }
+
+    
+    if (mouseX > width / 1.75 + 10 && mouseX < width / 1.75 + 110 && mouseY > height - 80 && mouseY < height - 40) {
+      homeButtonPressedFlag = true; 
+    }
   }
 }
 
@@ -334,4 +354,3 @@ class Confetti {
     this.y += this.speed;
   }
 }
-
