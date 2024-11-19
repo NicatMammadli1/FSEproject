@@ -5,7 +5,7 @@ let countButton;
 let count = 0;
 let buttonSize = 156;
 let displayCount = '';
-let timer = 3;
+let timer = 30;
 let lastUpdate = 0;
 let isTiming = false;
 
