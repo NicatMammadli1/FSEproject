@@ -19,6 +19,19 @@ let confettiCount = 0; // Counter to keep track of the number of confetti pieces
 
 function preload() {
   img = loadImage('walk.jpg');
+  music = createAudio('gameMusic.mp3');
+  try{
+  if(getItem('sound')==true){
+    music.loop(true);
+  }
+    else{
+      music.stop();
+    }
+  }
+catch(error){
+storeItem('sound', true);
+  music.loop(true)
+}
 }
 
 function setup() {
@@ -79,7 +92,7 @@ function draw() {
 }
 
 function homeButtonPressed() {
-  homeButton.style("background-color", "blue");
+      window.location.href = 'main.html';
 }
 
 function startButtonPressed() {
@@ -130,12 +143,14 @@ function showMedal() {
   
   if (count >= 25) {
     medal = '🥇';
+    storeItem('2m', 'g');
   } else if (count >= 15) {
     medal = '🥈';
+    storeItem('2m', 's');
   } else if (count >= 5) {
     medal = '🥉';
+    storeItem('2m', 'b');
   } else {
-    medal = 'No Medal';
   }
 
   fill(0);
