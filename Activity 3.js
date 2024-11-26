@@ -58,8 +58,25 @@ function setup() {
   createCanvas(400, 620);
   textAlign(CENTER, CENTER);
   setInterval(timeIt, 1000);
+  if(getItem('r')==true){
+  storeItem('3m', 'bl');
 }
-
+}
+function preload(){
+  music = createAudio('gameMusic.mp3');
+  try{
+  if(getItem('sound')==true){
+    music.loop(true);
+  }
+    else{
+      music.stop();
+    }
+  }
+catch(error){
+storeItem('sound', true);
+  music.loop(true)
+}
+}
 function resetCircles() {
   redCircles = [];
   whiteCircles = [];
@@ -95,7 +112,8 @@ function draw() {
   } else if (state === "submit" && resultsVisible) {
     drawResultPage();
   } else if (state === "home") {
-    background(255);
+    storeItem('r', false);
+    window.location.href = 'main.html';
   } else if (state === "error") {
     drawErrorPage();
   }
@@ -218,12 +236,15 @@ function drawResultPage() {
   } else if (count === 2) {
     textSize(60);
     text("🥉", 200, 250);
+    storeItem('3m', 'b');
   } else if (count === 3) {
     textSize(60);
     text("🥈", 200, 250);
+    storeItem('3m', 's');
   } else if (count === 4) {
     textSize(60);
     text("🥇", 200, 250);
+    storeItem('3m', 'g');
   }
   fill("lightblue");
   rect(80, 500, 100, 40);
